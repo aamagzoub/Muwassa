@@ -111,8 +111,6 @@ MainWindow::MainWindow(QWidget *parent) :
    }
 }
 
-
-
 void MainWindow::FindMember(){
     setUserAction(2);
 
@@ -549,8 +547,6 @@ void MainWindow::displaySlectedMemberPayments(){
     ui->defaultsPaymentBtn->setVisible(false);
     ui->showAllBtn->setVisible(true);
 
-
-
     mpMonthAlertModel = mpDbManager->showSlectedMonthDefaults(ui->monthToPayCb->currentIndex());
 
     ui->paymentsTV->setModel(mpMonthAlertModel);
@@ -577,9 +573,6 @@ void MainWindow::displayAllInPaymentTab(){
     ui->paymentsTV->show();
 }
 
-
-
-
 void MainWindow::displayTableOnGui(QSqlQueryModel *model){
     ui->basicInfoTV->setModel(model);
     ui->basicInfoTV->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -600,8 +593,6 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
-
-
 
 void MainWindow::printBasicInfo(){
     printThis(ui->basicInfoTV);
