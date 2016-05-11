@@ -555,7 +555,6 @@ QSqlQueryModel *DatabaseManager::getPaymentsHistory(QString selectedYear){
 
 void DatabaseManager::setCurrentYear(int currentYear){
     current_year = QString::number(currentYear);
-    //current_year = "2015";
 }
 
 QString DatabaseManager::getCurrentYear(){
