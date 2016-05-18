@@ -38,6 +38,10 @@ public:
     QSqlQueryModel *getAlerts(int alertChoice, int defaultsChoice);
     QSqlQueryModel *getAllPaymentsInfo();
     QSqlQueryModel *getPaymentsHistory(QString selectedYear);
+    QSqlQueryModel *getInactiveMembers();
+    QString deactivateMembership(QString refNo);
+    QString activateMembership(QString refNo);
+
 
 public:
     QSqlDatabase db;

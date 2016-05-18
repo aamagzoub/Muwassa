@@ -218,7 +218,7 @@ QSqlQueryModel *DatabaseManager::getRecordForEditOrFind(QString searchValue, int
 
     if (selectionMode == 1)
     {
-        query.prepare("SELECT * FROM basic_info ORDER BY refNo");
+        query.prepare("SELECT * FROM basic_info WHERE status = 'نشط' ORDER BY refNo");
         query.exec();
         model->setQuery(query);
 
@@ -630,3 +630,55 @@ QString DatabaseManager::decideMonthName(int monthAsInt){
     return monthAsQString;
 }
 
+QSqlQueryModel *DatabaseManager::getInactiveMembers(){
+    QSqlQuery query;
+    QSqlQueryModel *model = new QSqlQueryModel;
+
+        query.prepare("SELECT * FROM basic_info WHERE status = 'غير نشط' ORDER BY refNo");
+        query.exec();
+        model->setQuery(query);
+
+        model->setHeaderData(0, Qt::Horizontal, tr(" ر . م "));
+        model->setHeaderData(1, Qt::Horizontal, tr("الإسم"));
+        model->setHeaderData(2, Qt::Horizontal, tr("إسم الوالدة"));
+        model->setHeaderData(3, Qt::Horizontal, tr("التلفون"));
+        model->setHeaderData(4, Qt::Horizontal, tr("البريد الإلكتروني"));
+        model->setHeaderData(5, Qt::Horizontal, tr("الرمز البريدي"));
+        model->setHeaderData(6, Qt::Horizontal, tr("العنوان"));
+        model->setHeaderData(7, Qt::Horizontal, tr("إسم الزوج"));
+        model->setHeaderData(8, Qt::Horizontal, tr("إسم والدة الزوج"));
+        model->setHeaderData(9, Qt::Horizontal, tr("أسماء الأطفال"));
+        model->setHeaderData(10, Qt::Horizontal, tr("تاريخ الإشتراك"));
+        model->setHeaderData(11, Qt::Horizontal, tr("طريقة الدفع"));
+        model->setHeaderData(12, Qt::Horizontal, tr("القيمة"));
+        model->setHeaderData(13, Qt::Horizontal, tr("الاشتراك"));
+
+    return model;
+}
+
+QString DatabaseManager::deactivateMembership(QString refNo){
+    QSqlQuery query;
+    QSqlQueryModel *model = new QSqlQueryModel;
+    query.prepare("UPDATE basic_info SET status = 'غير نشط' WHERE refNo = :refNo");
+    query.bindValue(":refNo", refNo);
+    if(!query.exec()) {
+        qDebug() << "Error" << query.lastError().text();
+        return query.lastError().text();
+    } else {
+        return "Member has been deactivated";
+    }
+
+}
+
+QString DatabaseManager::activateMembership(QString refNo){
+    QSqlQuery query;
+    QSqlQueryModel *model = new QSqlQueryModel;
+    query.prepare("UPDATE basic_info SET status = 'نشط' WHERE refNo = :refNo");
+    query.bindValue(":refNo", refNo);
+    if(!query.exec()) {
+        qDebug() << "Error" << query.lastError().text();
+        return query.lastError().text();
+    } else {
+        return "Member has been Activated";
+    }
+}

@@ -90,7 +90,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->selectMethodSB,SIGNAL(currentIndexChanged(QString)),this,SLOT(enableGoSearchBtn()));
     connect(ui->selectYearSb,SIGNAL(valueChanged(QString)),this,SLOT(checkYear()));
     connect(ui->showAllMemberInfoBtn,SIGNAL(clicked()),this,SLOT(ShowAllBasicInfoDetails()));
-
+    connect(ui->inactiveMemBtn,SIGNAL(clicked()),this,SLOT(showInactiveMembers()));
+    connect(ui->cancelMemBtn,SIGNAL(clicked()),this,SLOT(deactivateMembership()));
 
     switch(getCurrentMonth()){
     case(1):
@@ -575,6 +576,7 @@ void MainWindow::displayAllInPaymentTab(){
 
 void MainWindow::displayTableOnGui(QSqlQueryModel *model){
     ui->basicInfoTV->setModel(model);
+    ui->basicInfoTV->hideColumn(13);
     ui->basicInfoTV->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->basicInfoTV->verticalHeader()->hide();
     ui->basicInfoTV->setAlternatingRowColors(true);
@@ -943,4 +945,20 @@ void MainWindow::hideColumns(){
         break;
     }
 
+}
+
+void MainWindow::showInactiveMembers(){
+    ui->editBtn->setEnabled(false);
+    ui->removeBtn->setEnabled(false);
+    mpShowingModel = mpDbManager->getInactiveMembers();
+    displayTableOnGui(mpShowingModel);
+}
+
+void MainWindow::deactivateMembership(){
+    int row_index= ui->basicInfoTV->currentIndex().row();
+    QModelIndex index = mpShowingModel->index(row_index, 0);
+    QString ref_no = index.data().toString();
+
+    QString status = mpDbManager->deactivateMembership(ref_no);
+    ui->appStatus->setText(status);
 }
