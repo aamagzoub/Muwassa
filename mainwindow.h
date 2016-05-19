@@ -82,7 +82,6 @@ private slots:
     void ConfirmPayment();
     void displaySlectedMonthDefaults();
     void EnableBtns();
-    //void EnableConfirmationBtn();
     void GetOneMonthAlerts();
     void GetTwoMonthsAlerts();
     void GetThreeMonthsAlerts();

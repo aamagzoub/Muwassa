@@ -7,8 +7,6 @@
 #include <QSqlQuery>
 #include <QtSql>
 
-
-
 class DatabaseManager : public QObject
 {
     Q_OBJECT
@@ -39,8 +37,8 @@ public:
     QSqlQueryModel *getAllPaymentsInfo();
     QSqlQueryModel *getPaymentsHistory(QString selectedYear);
     QSqlQueryModel *getInactiveMembers();
-    QString deactivateMembership(QString refNo);
-    QString activateMembership(QString refNo);
+    bool deactivateMembership(QString refNo);
+    bool activateMembership(QString refNo);
     bool isMemStatusAct(QString refNo);
 
 

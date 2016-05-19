@@ -660,28 +660,28 @@ QSqlQueryModel *DatabaseManager::getInactiveMembers(){
     return model;
 }
 
-QString DatabaseManager::deactivateMembership(QString refNo){
+bool DatabaseManager::deactivateMembership(QString refNo){
     QSqlQuery query;
     query.prepare("UPDATE basic_info SET status = 'غير نشط' WHERE refNo = :refNo");
     query.bindValue(":refNo", refNo);
     if(!query.exec()) {
         qDebug() << "Error" << query.lastError().text();
-        return query.lastError().text();
+        return false;
     } else {
-        return "Member has been deactivated";
+        return true;
     }
 
 }
 
-QString DatabaseManager::activateMembership(QString refNo){
+bool DatabaseManager::activateMembership(QString refNo){
     QSqlQuery query;
     query.prepare("UPDATE basic_info SET status = 'نشط' WHERE refNo = :refNo");
     query.bindValue(":refNo", refNo);
     if(!query.exec()) {
         qDebug() << "Error" << query.lastError().text();
-        return query.lastError().text();
+        return false;
     } else {
-        return "Member has been Activated";
+        return true;
     }
 }
 

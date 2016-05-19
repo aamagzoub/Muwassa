@@ -555,7 +555,6 @@ void MainWindow::displaySlectedMonthDefaults(){
     ui->paymentsTV->show();
 }
 
-//----------------------------------------------------------------------------------------------------
 void MainWindow::displaySlectedMemberPayments(){
     setConfCorrPayInvisible();
     ui->defaultsPaymentBtn->setVisible(false);
@@ -571,7 +570,6 @@ void MainWindow::displaySlectedMemberPayments(){
     ui->paymentsTV->setSelectionMode(QAbstractItemView::MultiSelection);
     ui->paymentsTV->show();
 }
-//----------------------------------------------------------------------------------------------------
 
 void MainWindow::displayAllInPaymentTab(){
     setConfCorrPayInvisible();
@@ -748,8 +746,11 @@ void MainWindow::EnableEditRemoveBtn(){
 
 bool MainWindow::isMemStatusAct(){
     int row_index= ui->basicInfoTV->rowAt(1);
+
     QModelIndex index = mpShowingModel->index(row_index, 0);
     QString ref_no = index.data().toString();
+    index.data().clear();
+    qDebug() << ref_no;
     return mpDbManager->isMemStatusAct(ref_no);
 }
 
@@ -980,10 +981,17 @@ void MainWindow::deactivateMembership(){
     QModelIndex index = mpShowingModel->index(row_index, 0);
     QString ref_no = index.data().toString();
 
-    QString status = mpDbManager->deactivateMembership(ref_no);
-    ui->appStatus->setText(status);
+    reply = QMessageBox::question(this, "تجميد","هل انت متأكد؟  ", QMessageBox::Yes|QMessageBox::No);
+    if (reply == QMessageBox::Yes) {
+        if(!mpDbManager->deactivateMembership(ref_no)){
+            ui->appStatus->setText("Error: membership deactivation ...");
+        } else{
+            ui->appStatus->setText("   تم التجميد بنجاح ");
+            showActiveMembers();
+            showPaymentDetails();
+        }
+    }
 
-    showActiveMembers();
 }
 
 void MainWindow::activateMembership(){
@@ -991,10 +999,17 @@ void MainWindow::activateMembership(){
     QModelIndex index = mpShowingModel->index(row_index, 0);
     QString ref_no = index.data().toString();
 
-    QString status = mpDbManager->activateMembership(ref_no);
-    ui->appStatus->setText(status);
+    reply = QMessageBox::question(this, "تنشيط","هل انت متأكد؟  ", QMessageBox::Yes|QMessageBox::No);
+    if (reply == QMessageBox::Yes) {
+        if(!mpDbManager->activateMembership(ref_no)){
+            ui->appStatus->setText("Error: membership activation ...");
+        } else{
+            ui->appStatus->setText("   تم التنشيط بنجاح ");
+            showInactiveMembers();
+            showPaymentDetails();
 
-    showInactiveMembers();
+        }
+    }
 }
 
 
