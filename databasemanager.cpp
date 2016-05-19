@@ -194,8 +194,6 @@ bool DatabaseManager::db_data_deletion(QString refNo){
     }
 
     while (lastYear >= 2014) {
-        qDebug() << yearToDelete ;
-
         query.prepare("DELETE FROM payments_" + yearToDelete + " WHERE refNo = (:refNo)");
         query.bindValue(":refNo",refNo);
         if (!query.exec())
@@ -574,7 +572,7 @@ QSqlQueryModel *DatabaseManager::getPaymentsHistory(QString selectedYear){
 }
 
 void DatabaseManager::setCurrentYear(int currentYear){
-    //current_year = "2015";
+    //current_year = "2014";
     current_year = QString::number(currentYear);
 }
 
