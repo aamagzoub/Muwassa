@@ -472,6 +472,8 @@ void MainWindow::showActiveMembers(){
     ui->removeBtn->setEnabled(false);
     ui->activateMemBtn->setEnabled(false);
     ui->deactivateMemBtn->setEnabled(false);
+    ui->showAllMemberInfoBtn->setVisible(false);
+    ui->inactiveMemBtn->setVisible(true);
     mpShowingModel = mpDbManager->getRecordForEditOrFind(ref_no_string, getUserAction(),MYNULL);
     displayTableOnGui(mpShowingModel);
 }
@@ -481,6 +483,8 @@ void MainWindow::showInactiveMembers(){
     ui->removeBtn->setEnabled(false);
     ui->activateMemBtn->setEnabled(false);
     ui->deactivateMemBtn->setEnabled(false);
+    ui->showAllMemberInfoBtn->setVisible(true);
+    ui->inactiveMemBtn->setVisible(false);
     mpShowingModel = mpDbManager->getInactiveMembers();
     displayTableOnGui(mpShowingModel);
 }
