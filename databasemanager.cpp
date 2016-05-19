@@ -180,17 +180,33 @@ bool DatabaseManager::db_data_update(QString refNo,QString name,
 
 bool DatabaseManager::db_data_deletion(QString refNo){
 
-        QSqlQuery query;
 
-        query.prepare("DELETE FROM payments_" + getCurrentYear() + " WHERE refNo = (:refNo)");
+    QSqlQuery query;
+    QString yearToDelete = getCurrentYear();
+    int lastYear = getCurrentYear().toInt();
+
+    query.prepare("DELETE FROM basic_info WHERE refNo = (:refNo)");
+    query.bindValue(":refNo",refNo);
+    if (!query.exec())
+    {
+        qDebug() << "Error" << query.lastError().text();
+        return false;
+    }
+
+    while (lastYear >= 2014) {
+        qDebug() << yearToDelete ;
+
+        query.prepare("DELETE FROM payments_" + yearToDelete + " WHERE refNo = (:refNo)");
         query.bindValue(":refNo",refNo);
         if (!query.exec())
         {
             qDebug() << "Error" << query.lastError().text();
             return false;
         }
-        return true;
-
+        lastYear = lastYear - 1;
+        yearToDelete = QString::number(lastYear);
+    }
+    return true;
 }
 
 bool DatabaseManager::checkRefNoExist(QString refNo){
@@ -558,6 +574,7 @@ QSqlQueryModel *DatabaseManager::getPaymentsHistory(QString selectedYear){
 }
 
 void DatabaseManager::setCurrentYear(int currentYear){
+    //current_year = "2015";
     current_year = QString::number(currentYear);
 }
 
