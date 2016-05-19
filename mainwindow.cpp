@@ -59,7 +59,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setYear();
     setSearchItemsInvisible();
     setPaymentsItemsInvislable();
-    ShowAllBasicInfoDetails();
+    showActiveMembers();
     showPaymentDetails();
 
     connect(ui->searchBy,SIGNAL(currentIndexChanged(QString)),this,SLOT(enableSearchFields()));
@@ -89,7 +89,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->searchInput,SIGNAL(textEdited(QString)),this,SLOT(enableGoSearchBtn()));
     connect(ui->selectMethodSB,SIGNAL(currentIndexChanged(QString)),this,SLOT(enableGoSearchBtn()));
     connect(ui->selectYearSb,SIGNAL(valueChanged(QString)),this,SLOT(checkYear()));
-    connect(ui->showAllMemberInfoBtn,SIGNAL(clicked()),this,SLOT(ShowAllBasicInfoDetails()));
+    connect(ui->showAllMemberInfoBtn,SIGNAL(clicked()),this,SLOT(showActiveMembers()));
+    connect(ui->inactiveMemBtn,SIGNAL(clicked()),this,SLOT(showInactiveMembers()));
+    connect(ui->deactivateMemBtn,SIGNAL(clicked()),this,SLOT(deactivateMembership()));
+    connect(ui->activateMemBtn,SIGNAL(clicked()),this,SLOT(activateMembership()));
 
 
     switch(getCurrentMonth()){
@@ -110,8 +113,6 @@ MainWindow::MainWindow(QWidget *parent) :
         break;
    }
 }
-
-
 
 void MainWindow::FindMember(){
     setUserAction(2);
@@ -159,7 +160,7 @@ void MainWindow::DeleteMember(){
             ui->appStatus->setText("Error: data deletion ...");
         } else{
             ui->appStatus->setText("   تم المسح بنجاح ");
-            ShowAllBasicInfoDetails();
+            showActiveMembers();
             showPaymentDetails();
         }
     }
@@ -246,7 +247,7 @@ void MainWindow::EditMemberBasicInfo(){
     mpAddMembersDialog->readSettings();
     mpAddMembersDialog->exec();
 
-    ShowAllBasicInfoDetails();
+    showActiveMembers();
 
     DisnableEditRemoveBtn();
 }
@@ -464,12 +465,23 @@ void MainWindow::GetHigherThanThreeAlerts(){
     displayAlertsOnGui(mpMonthAlertModel);
 }
 
-void MainWindow::ShowAllBasicInfoDetails(){
+void MainWindow::showActiveMembers(){
     QString ref_no_string;
     setUserAction(1);
     ui->editBtn->setEnabled(false);
     ui->removeBtn->setEnabled(false);
+    ui->activateMemBtn->setEnabled(false);
+    ui->deactivateMemBtn->setEnabled(false);
     mpShowingModel = mpDbManager->getRecordForEditOrFind(ref_no_string, getUserAction(),MYNULL);
+    displayTableOnGui(mpShowingModel);
+}
+
+void MainWindow::showInactiveMembers(){
+    ui->editBtn->setEnabled(false);
+    ui->removeBtn->setEnabled(false);
+    ui->activateMemBtn->setEnabled(false);
+    ui->deactivateMemBtn->setEnabled(false);
+    mpShowingModel = mpDbManager->getInactiveMembers();
     displayTableOnGui(mpShowingModel);
 }
 
@@ -543,13 +555,10 @@ void MainWindow::displaySlectedMonthDefaults(){
     ui->paymentsTV->show();
 }
 
-//----------------------------------------------------------------------------------------------------
 void MainWindow::displaySlectedMemberPayments(){
     setConfCorrPayInvisible();
     ui->defaultsPaymentBtn->setVisible(false);
     ui->showAllBtn->setVisible(true);
-
-
 
     mpMonthAlertModel = mpDbManager->showSlectedMonthDefaults(ui->monthToPayCb->currentIndex());
 
@@ -561,7 +570,6 @@ void MainWindow::displaySlectedMemberPayments(){
     ui->paymentsTV->setSelectionMode(QAbstractItemView::MultiSelection);
     ui->paymentsTV->show();
 }
-//----------------------------------------------------------------------------------------------------
 
 void MainWindow::displayAllInPaymentTab(){
     setConfCorrPayInvisible();
@@ -577,11 +585,9 @@ void MainWindow::displayAllInPaymentTab(){
     ui->paymentsTV->show();
 }
 
-
-
-
 void MainWindow::displayTableOnGui(QSqlQueryModel *model){
     ui->basicInfoTV->setModel(model);
+    ui->basicInfoTV->hideColumn(13);
     ui->basicInfoTV->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->basicInfoTV->verticalHeader()->hide();
     ui->basicInfoTV->setAlternatingRowColors(true);
@@ -600,8 +606,6 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
-
-
 
 void MainWindow::printBasicInfo(){
     printThis(ui->basicInfoTV);
@@ -629,7 +633,7 @@ void MainWindow::openAddMemberForm(){
     mpAddMembersDialog->exec();
 
     if (!mpAddMembersDialog->cancelValue == 1){
-        ShowAllBasicInfoDetails();
+        showActiveMembers();
     }
     DisnableEditRemoveBtn();
     showPaymentDetails();
@@ -730,6 +734,24 @@ void MainWindow::EnableBtns(){
 void MainWindow::EnableEditRemoveBtn(){
     ui->editBtn->setEnabled(true);
     ui->removeBtn->setEnabled(true);
+
+    if(isMemStatusAct()){
+        ui->activateMemBtn->setEnabled(false);
+        ui->deactivateMemBtn->setEnabled(true);
+    } else {
+        ui->activateMemBtn->setEnabled(true);
+        ui->deactivateMemBtn->setEnabled(false);
+    }
+}
+
+bool MainWindow::isMemStatusAct(){
+    int row_index= ui->basicInfoTV->rowAt(1);
+
+    QModelIndex index = mpShowingModel->index(row_index, 0);
+    QString ref_no = index.data().toString();
+    index.data().clear();
+    qDebug() << ref_no;
+    return mpDbManager->isMemStatusAct(ref_no);
 }
 
 void MainWindow::DisnableEditRemoveBtn(){
@@ -953,3 +975,41 @@ void MainWindow::hideColumns(){
     }
 
 }
+
+void MainWindow::deactivateMembership(){
+    int row_index= ui->basicInfoTV->currentIndex().row();
+    QModelIndex index = mpShowingModel->index(row_index, 0);
+    QString ref_no = index.data().toString();
+
+    reply = QMessageBox::question(this, "تجميد","هل انت متأكد؟  ", QMessageBox::Yes|QMessageBox::No);
+    if (reply == QMessageBox::Yes) {
+        if(!mpDbManager->deactivateMembership(ref_no)){
+            ui->appStatus->setText("Error: membership deactivation ...");
+        } else{
+            ui->appStatus->setText("   تم التجميد بنجاح ");
+            showActiveMembers();
+            showPaymentDetails();
+        }
+    }
+
+}
+
+void MainWindow::activateMembership(){
+    int row_index= ui->basicInfoTV->currentIndex().row();
+    QModelIndex index = mpShowingModel->index(row_index, 0);
+    QString ref_no = index.data().toString();
+
+    reply = QMessageBox::question(this, "تنشيط","هل انت متأكد؟  ", QMessageBox::Yes|QMessageBox::No);
+    if (reply == QMessageBox::Yes) {
+        if(!mpDbManager->activateMembership(ref_no)){
+            ui->appStatus->setText("Error: membership activation ...");
+        } else{
+            ui->appStatus->setText("   تم التنشيط بنجاح ");
+            showInactiveMembers();
+            showPaymentDetails();
+
+        }
+    }
+}
+
+

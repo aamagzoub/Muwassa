@@ -7,8 +7,6 @@
 #include <QSqlQuery>
 #include <QtSql>
 
-
-
 class DatabaseManager : public QObject
 {
     Q_OBJECT
@@ -18,27 +16,31 @@ public:
     QSqlQueryModel *getRecordForEditOrFind(QString searchValue, int selectionMode, int switchChoise);
     QSqlQueryModel *getAllPayInfoForSelectedMonth(int selectedMonthInGui);
 
-    bool db_data_deletion(QString ref_no);
-    bool db_data_insertion(QString ref_no, QString name,
-                           QString mother, QString tel, QString email, QString post_code,
+    bool db_data_deletion(QString refNo);
+    bool db_data_insertion(QString refNo, QString name,
+                           QString mother, QString tel, QString email, QString postCode,
                            QString address, QString spouse,
-                           QString mother_in_law, QString childern,
-                           QString membership_Date, QString payment_method, QString payment);
-    bool db_data_update(QString ref_no, QString name,
-                        QString mother, QString tel, QString email, QString post_code,
+                           QString motherInLaw, QString childern,
+                           QString Date, QString method, QString payment, QString status);
+    bool db_data_update(QString refNo, QString name,
+                        QString mother, QString tel, QString email, QString postCode,
                         QString address, QString spouse,
-                        QString mother_in_law, QString childern,
-                        QString membership_Date, QString payment_method, QString payment);
+                        QString motherInLaw, QString childern,
+                        QString Date, QString method, QString payment, QString status);
     QSqlQueryModel *showSlectedMonthDefaults(int selectedMonthInGui);
-    //QSqlQueryModel *showOneMonthAlerts(QString selectedMonth);
     QSqlQueryModel *showTwoMonthsAlerts(QString selectedMonth);
     QSqlQueryModel *showThreeMonthsAlerts(QString selectedMonth);
     bool confirm_payment(QList<QString> refNosList, int currentMonthFromGui);
     bool correct_payment(QList<QString> refNosList, int currentMonthFromGui);
-    bool checkRefNoExist(QString ref_no);
+    bool checkRefNoExist(QString refNo);
     QSqlQueryModel *getAlerts(int alertChoice, int defaultsChoice);
     QSqlQueryModel *getAllPaymentsInfo();
     QSqlQueryModel *getPaymentsHistory(QString selectedYear);
+    QSqlQueryModel *getInactiveMembers();
+    bool deactivateMembership(QString refNo);
+    bool activateMembership(QString refNo);
+    bool isMemStatusAct(QString refNo);
+
 
 public:
     QSqlDatabase db;
