@@ -54,12 +54,15 @@ void AddMembersDialog::SaveMemberBasicInfo(QString ref_no){
     QString membership_Date = ui->memebershipDate->text();
     QString payment = ui->payment->text();
     QString payment_method = ui->paymentMethod->currentText();
+    QString status;
 
     if(!mpDbManager->checkRefNoExist(ref_no)){
 
+        status = "نشط";
+
         if(!mpDbManager->db_data_insertion(ref_no,name,mother,tel,email,post_code,address,
                                            spouse,mother_in_law,childern,
-                                           membership_Date,payment_method,payment)){
+                                           membership_Date,payment_method,payment,status)){
             ui->statusLbl->setText("Error: data insertion ...");
         } else {
             ui->refNo->clear();
@@ -86,7 +89,7 @@ void AddMembersDialog::SaveMemberBasicInfo(QString ref_no){
         if (reply == QMessageBox::Yes) {
             if(!mpDbManager->db_data_update(ref_no,name,mother,tel,email,post_code,address,
                                             spouse,mother_in_law,childern,
-                                            membership_Date,payment_method,payment)){
+                                            membership_Date,payment_method,payment,status)){
                 ui->statusLbl->setText("Error: data update ...");
             } else {
                 ui->refNo->clear();

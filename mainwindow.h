@@ -110,6 +110,8 @@ private slots:
     void startAddition();
     void checkYear();
     void displaySlectedMemberPayments();
+    void showInactiveMembers();
+    void deactivateMembership();
 };
 
 #endif // MAINWINDOW_H
