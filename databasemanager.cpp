@@ -488,7 +488,8 @@ QSqlQueryModel *DatabaseManager::getAllPaymentsInfo(){
                     "payments_"+getCurrentYear()+".December "+
                     "FROM payments_"+getCurrentYear()+", basic_info "+
                     "ON payments_"+getCurrentYear()+".refNo = basic_info.refNo "+
-                    "WHERE payments_"+getCurrentYear()+".refNo = basic_info.refNo");
+                    "WHERE payments_"+getCurrentYear()+".refNo = basic_info.refNo " +
+                    "AND status = 'نشط'");
 
 
     model->setHeaderData(0, Qt::Horizontal, tr(" ر . م "));
@@ -658,7 +659,6 @@ QSqlQueryModel *DatabaseManager::getInactiveMembers(){
 
 QString DatabaseManager::deactivateMembership(QString refNo){
     QSqlQuery query;
-    QSqlQueryModel *model = new QSqlQueryModel;
     query.prepare("UPDATE basic_info SET status = 'غير نشط' WHERE refNo = :refNo");
     query.bindValue(":refNo", refNo);
     if(!query.exec()) {
@@ -672,7 +672,6 @@ QString DatabaseManager::deactivateMembership(QString refNo){
 
 QString DatabaseManager::activateMembership(QString refNo){
     QSqlQuery query;
-    QSqlQueryModel *model = new QSqlQueryModel;
     query.prepare("UPDATE basic_info SET status = 'نشط' WHERE refNo = :refNo");
     query.bindValue(":refNo", refNo);
     if(!query.exec()) {
@@ -681,4 +680,21 @@ QString DatabaseManager::activateMembership(QString refNo){
     } else {
         return "Member has been Activated";
     }
+}
+
+bool DatabaseManager::isMemStatusAct(QString refNo){
+    QSqlQuery query;
+    QSqlQueryModel *model = new QSqlQueryModel;
+
+    query.prepare("SELECT status FROM basic_info WHERE refNo = :refNo");
+    query.bindValue(":refNo", refNo);
+    query.exec();
+    model->setQuery(query);
+
+    if(model->record(0).value(0).toString()== "نشط"){
+        return true;
+    } else {
+        return false;
+    }
+
 }

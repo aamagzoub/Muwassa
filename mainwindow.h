@@ -86,7 +86,7 @@ private slots:
     void GetOneMonthAlerts();
     void GetTwoMonthsAlerts();
     void GetThreeMonthsAlerts();
-    void ShowAllBasicInfoDetails();
+    void showActiveMembers();
     void enableSearchFields();
     void displayAlertsOnGui(QSqlQueryModel *mMonthAlertModel);
     void displayAllmembersAllYear(QSqlQueryModel *monthAlertModel);
@@ -112,6 +112,8 @@ private slots:
     void displaySlectedMemberPayments();
     void showInactiveMembers();
     void deactivateMembership();
+    void activateMembership();
+    bool isMemStatusAct();
 };
 
 #endif // MAINWINDOW_H

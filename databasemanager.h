@@ -41,6 +41,7 @@ public:
     QSqlQueryModel *getInactiveMembers();
     QString deactivateMembership(QString refNo);
     QString activateMembership(QString refNo);
+    bool isMemStatusAct(QString refNo);
 
 
 public:
