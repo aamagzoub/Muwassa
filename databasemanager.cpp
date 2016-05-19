@@ -295,8 +295,8 @@ QSqlQueryModel *DatabaseManager::showSlectedMonthDefaults(int selectedMonthInGui
             ",method, payment "+
             "FROM payments_" + getCurrentYear() + ", basic_info "+
             "ON payments_" + getCurrentYear() + ".refNo = basic_info.refNo "+
-            "WHERE payments_" + getCurrentYear() + "." + selectedMonth + " IS NULL OR "+
-            "payments_" + getCurrentYear() + "." + selectedMonth + " = '' "+
+            "WHERE payments_" + getCurrentYear() + "." + selectedMonth + " IS NULL "+
+            "AND basic_info.status = 'نشط' "+
             "ORDER BY payments_" + getCurrentYear() + ".refNo";
 
     model->setQuery(qryTxt);
@@ -322,6 +322,7 @@ QSqlQueryModel *DatabaseManager::getAllPayInfoForSelectedMonth(int selectedMonth
                   ",method, payment "+
                   "FROM payments_" + getCurrentYear() + ", basic_info "+
                   "WHERE payments_" + getCurrentYear() + ".refNo = basic_info.refNo "+
+                  "AND basic_info.status = 'نشط' "+
                   "ORDER BY basic_info.refNo");
     query.exec();
     model->setQuery(query);
@@ -413,11 +414,13 @@ QSqlQueryModel *DatabaseManager::getAlerts(int alertChoice, int defaultsChoice){
     if (defaultsChoice == 4) {
         qryTxt = qryTxt + "WHERE unpaid_count > " + QString::number(alertChoice) + " "+
                 "AND payments_" + getCurrentYear() + ".refNo = basic_info.refNo "+
+                "AND basic_info.status = 'نشط' "+
                 "GROUP BY payments_" + getCurrentYear() + ".refNo "+
                 "ORDER BY unpaid_count";
     } else {
         qryTxt = qryTxt + "WHERE unpaid_count = " + QString::number(alertChoice) + " "+
                 "AND payments_" + getCurrentYear() + ".refNo = basic_info.refNo "+
+                "AND basic_info.status = 'نشط' "+
                 "GROUP BY payments_" + getCurrentYear() + ".refNo "+
                 "ORDER BY payments_" + getCurrentYear() + ".refNo";
     }
