@@ -753,13 +753,48 @@ void MainWindow::EnableEditRemoveBtn(){
 }
 
 bool MainWindow::isMemStatusAct(){
-    int row_index= ui->basicInfoTV->rowAt(1);
-
+    int row_index= ui->basicInfoTV->currentIndex().row();
     QModelIndex index = mpShowingModel->index(row_index, 0);
     QString ref_no = index.data().toString();
     index.data().clear();
     qDebug() << ref_no;
+    bool status = mpDbManager->isMemStatusAct(ref_no);
+    qDebug() << status;
     return mpDbManager->isMemStatusAct(ref_no);
+}
+
+void MainWindow::deactivateMembership(){
+    int row_index= ui->basicInfoTV->currentIndex().row();
+    QModelIndex index = mpShowingModel->index(row_index, 0);
+    QString ref_no = index.data().toString();
+
+    reply = QMessageBox::question(this, "تجميد","هل انت متأكد؟  ", QMessageBox::Yes|QMessageBox::No);
+    if (reply == QMessageBox::Yes) {
+        if(!mpDbManager->deactivateMembership(ref_no)){
+            ui->appStatus->setText("Error: membership deactivation ...");
+        } else{
+            ui->appStatus->setText("   تم التجميد بنجاح ");
+            showActiveMembers();
+            showCurrentPayments();
+        }
+    }
+}
+
+void MainWindow::activateMembership(){
+    int row_index= ui->basicInfoTV->currentIndex().row();
+    QModelIndex index = mpShowingModel->index(row_index, 0);
+    QString ref_no = index.data().toString();
+
+    reply = QMessageBox::question(this, "تنشيط","هل انت متأكد؟  ", QMessageBox::Yes|QMessageBox::No);
+    if (reply == QMessageBox::Yes) {
+        if(!mpDbManager->activateMembership(ref_no)){
+            ui->appStatus->setText("Error: membership activation ...");
+        } else{
+            ui->appStatus->setText("   تم التنشيط بنجاح ");
+            showInactiveMembers();
+            showCurrentPayments();
+        }
+    }
 }
 
 void MainWindow::DisnableEditRemoveBtn(){
@@ -998,39 +1033,6 @@ void MainWindow::showColumns(){
     ui->paymentsTV->setColumnHidden(14, false);
 }
 
-void MainWindow::deactivateMembership(){
-    int row_index= ui->basicInfoTV->currentIndex().row();
-    QModelIndex index = mpShowingModel->index(row_index, 0);
-    QString ref_no = index.data().toString();
 
-    reply = QMessageBox::question(this, "تجميد","هل انت متأكد؟  ", QMessageBox::Yes|QMessageBox::No);
-    if (reply == QMessageBox::Yes) {
-        if(!mpDbManager->deactivateMembership(ref_no)){
-            ui->appStatus->setText("Error: membership deactivation ...");
-        } else{
-            ui->appStatus->setText("   تم التجميد بنجاح ");
-            showActiveMembers();
-            showCurrentPayments();
-        }
-    }
-}
-
-void MainWindow::activateMembership(){
-    int row_index= ui->basicInfoTV->currentIndex().row();
-    QModelIndex index = mpShowingModel->index(row_index, 0);
-    QString ref_no = index.data().toString();
-
-    reply = QMessageBox::question(this, "تنشيط","هل انت متأكد؟  ", QMessageBox::Yes|QMessageBox::No);
-    if (reply == QMessageBox::Yes) {
-        if(!mpDbManager->activateMembership(ref_no)){
-            ui->appStatus->setText("Error: membership activation ...");
-        } else{
-            ui->appStatus->setText("   تم التنشيط بنجاح ");
-            showInactiveMembers();
-            showCurrentPayments();
-
-        }
-    }
-}
 
 
