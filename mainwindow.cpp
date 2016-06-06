@@ -48,7 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->basicInfoTV->setStyleSheet("QHeaderView::section { background-color :#E5E4E2 ; color : black }");
     ui->paymentsTV->setStyleSheet("QHeaderView::section { background-color :#E5E4E2 ; color : black }");
 
-    ui->selectYearSb->setMinimum(2015);
+    ui->selectYearSb->setMinimum(2014);
     ui->selectYearSb->setMaximum((QDate::currentDate().year()));
     ui->selectYearSb->setValue((QDate::currentDate().year()));
     ui->selectMethodSB->setVisible(false);
@@ -60,7 +60,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setSearchItemsInvisible();
     setPaymentsItemsInvislable();
     showActiveMembers();
-    showPaymentDetails();
+    showCurrentPayments();
 
     connect(ui->searchBy,SIGNAL(currentIndexChanged(QString)),this,SLOT(enableSearchFields()));
     connect(ui->findBtn,SIGNAL(clicked()),this,SLOT(FindMember()));
@@ -82,7 +82,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->exitBtn,SIGNAL(clicked()),this,SLOT(Exit()));
     connect(ui->basicInfoPrintBtn,SIGNAL(clicked()),this,SLOT(printBasicInfo()));
     connect(ui->paymentsPrintBtn,SIGNAL(clicked()),this,SLOT(printPaymentInfo()));
-    connect(ui->showPaymentsDetailsBtn,SIGNAL(clicked()),this,SLOT(showPaymentDetails()));
+    connect(ui->showPaymentsDetailsBtn,SIGNAL(clicked()),this,SLOT(showCurrentPayments()));
     connect(ui->sendEmailBtn,SIGNAL(clicked()),this,SLOT(sendEmail()));
     connect(ui->sendGenralEmailBtn,SIGNAL(clicked()),this,SLOT(sendEmail()));
     connect(ui->addMemberBtn,SIGNAL(clicked()),this,SLOT(startAddition()));
@@ -161,7 +161,7 @@ void MainWindow::DeleteMember(){
         } else{
             ui->appStatus->setText("   تم المسح بنجاح ");
             showActiveMembers();
-            showPaymentDetails();
+            showCurrentPayments();
         }
     }
     DisnableEditRemoveBtn();
@@ -489,24 +489,25 @@ void MainWindow::showInactiveMembers(){
     displayTableOnGui(mpShowingModel);
 }
 
-void MainWindow::showPaymentDetails(){
+void MainWindow::showCurrentPayments(){
+    isItHistory = false;
     ui->showPaymentsDetailsBtn->setEnabled(false);
     ui->monthToPayCb->setCurrentIndex(0);
     setPaymentsItemsInvislable();
     setPaymentTrackShowMode(0);
     mpDbManager->setCurrentYear(QDate::currentDate().year());
     mpShowingModel = mpDbManager->getAllPaymentsInfo();
-    displayPaymentHistory(mpShowingModel);
+    displayPaymentsModel(mpShowingModel);
 }
 
-void MainWindow::showPaymentHistory(){
+void MainWindow::showPaymentsHistory(){
+    isItHistory = true;
     ui->showPaymentsDetailsBtn->setEnabled(false);
     ui->monthToPayCb->setCurrentIndex(0);
     setPaymentsItemsInvislable();
     setPaymentTrackShowMode(0);
-    QString AAA = getYear();
     mpShowingModel = mpDbManager->getPaymentsHistory(getYear());
-    displayPaymentHistory(mpShowingModel);
+    displayPaymentsModel(mpShowingModel);
 }
 
 void MainWindow::displayAlertsOnGui(QSqlQueryModel *mMonthAlertModel){
@@ -527,20 +528,23 @@ void MainWindow::displayAllmembersAllYear(QSqlQueryModel *monthAlertModel){
     ui->paymentsTV->resizeColumnsToContents();
     ui->paymentsTV->verticalHeader()->hide();
     ui->paymentsTV->setAlternatingRowColors(true);
-
     ui->paymentsTV->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->paymentsTV->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->paymentsTV->show();
 }
 
-void MainWindow::displayPaymentHistory(QSqlQueryModel *monthAlertModel){
+void MainWindow::displayPaymentsModel(QSqlQueryModel *monthAlertModel){
     ui->paymentsTV->setModel(monthAlertModel);
     ui->paymentsTV->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->paymentsTV->verticalHeader()->hide();
     ui->paymentsTV->setAlternatingRowColors(true);
     ui->paymentsTV->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->paymentsTV->setSelectionMode(QAbstractItemView::SingleSelection);
-    hideColumns();
+    if(!isItHistory){
+        hideColumns();
+    }else {
+        showColumns();
+    }
     ui->paymentsTV->show();
 }
 
@@ -640,7 +644,7 @@ void MainWindow::openAddMemberForm(){
         showActiveMembers();
     }
     DisnableEditRemoveBtn();
-    showPaymentDetails();
+    showCurrentPayments();
 }
 
 void MainWindow::setSearchItemsInvisible(){
@@ -819,10 +823,10 @@ void MainWindow::checkYear(){
 
     if(ui->selectYearSb->text() == QString::number(QDate::currentDate().year())){
         enableFeatures();
-        showPaymentDetails();
+        showCurrentPayments();
     } else {
         disableFeatures();
-        showPaymentHistory();
+        showPaymentsHistory();
     }
 }
 
@@ -980,6 +984,20 @@ void MainWindow::hideColumns(){
 
 }
 
+void MainWindow::showColumns(){
+    ui->paymentsTV->setColumnHidden(4, false);
+    ui->paymentsTV->setColumnHidden(5, false);
+    ui->paymentsTV->setColumnHidden(6, false);
+    ui->paymentsTV->setColumnHidden(7, false);
+    ui->paymentsTV->setColumnHidden(8, false);
+    ui->paymentsTV->setColumnHidden(9, false);
+    ui->paymentsTV->setColumnHidden(10, false);
+    ui->paymentsTV->setColumnHidden(11, false);
+    ui->paymentsTV->setColumnHidden(12, false);
+    ui->paymentsTV->setColumnHidden(13, false);
+    ui->paymentsTV->setColumnHidden(14, false);
+}
+
 void MainWindow::deactivateMembership(){
     int row_index= ui->basicInfoTV->currentIndex().row();
     QModelIndex index = mpShowingModel->index(row_index, 0);
@@ -992,10 +1010,9 @@ void MainWindow::deactivateMembership(){
         } else{
             ui->appStatus->setText("   تم التجميد بنجاح ");
             showActiveMembers();
-            showPaymentDetails();
+            showCurrentPayments();
         }
     }
-
 }
 
 void MainWindow::activateMembership(){
@@ -1010,7 +1027,7 @@ void MainWindow::activateMembership(){
         } else{
             ui->appStatus->setText("   تم التنشيط بنجاح ");
             showInactiveMembers();
-            showPaymentDetails();
+            showCurrentPayments();
 
         }
     }
