@@ -54,7 +54,7 @@ void AddMembersDialog::SaveMemberBasicInfo(QString ref_no){
     QString membership_Date = ui->memebershipDate->text();
     QString payment = ui->payment->text();
     QString payment_method = ui->paymentMethod->currentText();
-    QString status;
+    QString status = ui->mem_state->text();
 
     if(!mpDbManager->checkRefNoExist(ref_no)){
 

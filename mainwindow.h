@@ -37,6 +37,7 @@ private:
     AddMembersDialog *mpAddMembersDialog;
     QModelIndexList mpSelectedRowsIndexesList;
     QMessageBox::StandardButton reply;
+    bool isItHistory;
 
     int currentMonth;
     int userAction;
@@ -70,6 +71,7 @@ private:
     void setDisplayBtnsVisible();
     void setDisplayBtnsInvisible();
     void hideColumns();
+    void showColumns();
 
 private slots:
     void Exit();
@@ -94,9 +96,9 @@ private slots:
     void displayTableOnGui(QSqlQueryModel *mpShowingModel);
     void printPaymentInfo();
     void printBasicInfo();
-    void showPaymentDetails();
-    void showPaymentHistory();
-    void displayPaymentHistory(QSqlQueryModel *monthAlertModel);
+    void showCurrentPayments();
+    void showPaymentsHistory();
+    void displayPaymentsModel(QSqlQueryModel *monthAlertModel);
     void sendEmail();
     void openAddMemberForm();
     void setSearchItemsVisible();
@@ -112,7 +114,6 @@ private slots:
     void showInactiveMembers();
     void deactivateMembership();
     void activateMembership();
-    bool isMemStatusAct();
 };
 
 #endif // MAINWINDOW_H
