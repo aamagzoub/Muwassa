@@ -545,8 +545,7 @@ QSqlQueryModel *DatabaseManager::getPaymentsHistory(QString selectedYear){
                     "payments_"+selectedYear+".September, "+
                     "payments_"+selectedYear+".October, "+
                     "payments_"+selectedYear+".November, "+
-                    "payments_"+selectedYear+".December, "+
-                    "basic_info.status "+
+                    "payments_"+selectedYear+".December "+
                     "FROM payments_"+selectedYear+", basic_info "+
                     "ON payments_"+selectedYear+".refNo = basic_info.refNo "+
                     "WHERE payments_"+selectedYear+".refNo = basic_info.refNo");
@@ -572,7 +571,7 @@ QSqlQueryModel *DatabaseManager::getPaymentsHistory(QString selectedYear){
 }
 
 void DatabaseManager::setCurrentYear(int currentYear){
-    //current_year = "2014";
+    //current_year = "2015";
     current_year = QString::number(currentYear);
 }
 

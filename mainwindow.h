@@ -114,7 +114,6 @@ private slots:
     void showInactiveMembers();
     void deactivateMembership();
     void activateMembership();
-    bool isMemStatusAct();
 };
 
 #endif // MAINWINDOW_H

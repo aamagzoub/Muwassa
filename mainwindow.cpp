@@ -83,8 +83,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->basicInfoPrintBtn,SIGNAL(clicked()),this,SLOT(printBasicInfo()));
     connect(ui->paymentsPrintBtn,SIGNAL(clicked()),this,SLOT(printPaymentInfo()));
     connect(ui->showPaymentsDetailsBtn,SIGNAL(clicked()),this,SLOT(showCurrentPayments()));
-    connect(ui->sendEmailBtn,SIGNAL(clicked()),this,SLOT(sendEmail()));
-    connect(ui->sendGenralEmailBtn,SIGNAL(clicked()),this,SLOT(sendEmail()));
     connect(ui->addMemberBtn,SIGNAL(clicked()),this,SLOT(startAddition()));
     connect(ui->searchInput,SIGNAL(textEdited(QString)),this,SLOT(enableGoSearchBtn()));
     connect(ui->selectMethodSB,SIGNAL(currentIndexChanged(QString)),this,SLOT(enableGoSearchBtn()));
@@ -200,6 +198,7 @@ void MainWindow::EditMemberBasicInfo(){
     QString childern;
     QDate membership_Date;
     QString payment_method;
+    QString status;
     int payment;
     QSqlQueryModel *modelToShow;
 
@@ -229,6 +228,7 @@ void MainWindow::EditMemberBasicInfo(){
     membership_Date = QDate::fromString(date_temp,"yyyy/MM/dd");
     payment_method = modelToShow->record(row_index).value(11).toString();
     payment = modelToShow->record(row_index).value(12).toInt();
+    status = modelToShow->record(row_index).value(13).toString();
 
     mpAddMembersDialog->ui->refNo->setText(refNo);
     mpAddMembersDialog->ui->name->setText(name);
@@ -243,16 +243,15 @@ void MainWindow::EditMemberBasicInfo(){
     mpAddMembersDialog->ui->memebershipDate->setDate(membership_Date);
     mpAddMembersDialog->ui->paymentMethod->setCurrentText(payment_method);
     mpAddMembersDialog->ui->payment->setValue(payment);
-
+    mpAddMembersDialog->ui->mem_state->setText(status);
     mpAddMembersDialog->readSettings();
     mpAddMembersDialog->exec();
 
     showActiveMembers();
+    showCurrentPayments();
 
     DisnableEditRemoveBtn();
 }
-
-
 
 void MainWindow::SelectedRows(){
     if(ui->defaultsPaymentBtn->isVisible() | ui->showAllBtn->isVisible()){
@@ -743,16 +742,6 @@ void MainWindow::EnableEditRemoveBtn(){
     ui->editBtn->setEnabled(true);
     ui->removeBtn->setEnabled(true);
 
-    if(isMemStatusAct()){
-        ui->activateMemBtn->setEnabled(false);
-        ui->deactivateMemBtn->setEnabled(true);
-    } else {
-        ui->activateMemBtn->setEnabled(true);
-        ui->deactivateMemBtn->setEnabled(false);
-    }
-}
-
-bool MainWindow::isMemStatusAct(){
     int row_index= ui->basicInfoTV->currentIndex().row();
     QModelIndex index = mpShowingModel->index(row_index, 0);
     QString ref_no = index.data().toString();
@@ -760,7 +749,14 @@ bool MainWindow::isMemStatusAct(){
     qDebug() << ref_no;
     bool status = mpDbManager->isMemStatusAct(ref_no);
     qDebug() << status;
-    return mpDbManager->isMemStatusAct(ref_no);
+
+    if(status == true){
+        ui->activateMemBtn->setEnabled(false);
+        ui->deactivateMemBtn->setEnabled(true);
+    } else {
+        ui->activateMemBtn->setEnabled(true);
+        ui->deactivateMemBtn->setEnabled(false);
+    }
 }
 
 void MainWindow::deactivateMembership(){
@@ -791,7 +787,8 @@ void MainWindow::activateMembership(){
             ui->appStatus->setText("Error: membership activation ...");
         } else{
             ui->appStatus->setText("   تم التنشيط بنجاح ");
-            showInactiveMembers();
+            //showInactiveMembers();
+            showActiveMembers();
             showCurrentPayments();
         }
     }
@@ -853,9 +850,7 @@ QString MainWindow::getYear(){
 
 
 void MainWindow::checkYear(){
-
     setYear();
-
     if(ui->selectYearSb->text() == QString::number(QDate::currentDate().year())){
         enableFeatures();
         showCurrentPayments();
@@ -874,8 +869,6 @@ void MainWindow::enableFeatures(){
         ui->label_2->setVisible(true);
         ui->label_4->setVisible(true);
         ui->groupBox_15->setVisible(true);
-        ui->sendEmailBtn->setVisible(true);
-
         ui->oneMonthBtn->setVisible(true);
         ui->twoMonthsBtn->setVisible(true);
         ui->threeMonthsBtn->setVisible(true);
@@ -884,7 +877,6 @@ void MainWindow::enableFeatures(){
 }
 
 void MainWindow::disableFeatures(){
-    ui->sendEmailBtn->setVisible(false);
     ui->showPaymentsDetailsBtn->setVisible(false);
     ui->monthToPayCb->setVisible(false);
     ui->label_2->setVisible(false);
@@ -894,7 +886,6 @@ void MainWindow::disableFeatures(){
     ui->twoMonthsBtn->setVisible(false);
     ui->threeMonthsBtn->setVisible(false);
     ui->higherThanThreeBtn->setVisible(false);
-
     setPaymentsItemsInvislable();
     setConfCorrPayVisible();
 
