@@ -1087,6 +1087,24 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>refNo</tabstop>
+  <tabstop>memebershipDate</tabstop>
+  <tabstop>paymentMethod</tabstop>
+  <tabstop>payment</tabstop>
+  <tabstop>name</tabstop>
+  <tabstop>spouse</tabstop>
+  <tabstop>mother</tabstop>
+  <tabstop>motherInLaw</tabstop>
+  <tabstop>childern</tabstop>
+  <tabstop>tel</tabstop>
+  <tabstop>email</tabstop>
+  <tabstop>postCode</tabstop>
+  <tabstop>address</tabstop>
+  <tabstop>saveBtn</tabstop>
+  <tabstop>closeFormBtn</tabstop>
+  <tabstop>mem_state</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

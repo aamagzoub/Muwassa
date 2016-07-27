@@ -1539,6 +1539,37 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>showAllMemberInfoBtn</tabstop>
+  <tabstop>inactiveMemBtn</tabstop>
+  <tabstop>addMemberBtn</tabstop>
+  <tabstop>editBtn</tabstop>
+  <tabstop>deactivateMemBtn</tabstop>
+  <tabstop>activateMemBtn</tabstop>
+  <tabstop>removeBtn</tabstop>
+  <tabstop>findBtn_2</tabstop>
+  <tabstop>searchBy</tabstop>
+  <tabstop>searchInput</tabstop>
+  <tabstop>selectMethodSB</tabstop>
+  <tabstop>findBtn</tabstop>
+  <tabstop>basicInfoTV</tabstop>
+  <tabstop>addMemberTab</tabstop>
+  <tabstop>basicInfoPrintBtn</tabstop>
+  <tabstop>exitBtn</tabstop>
+  <tabstop>paymentsTV</tabstop>
+  <tabstop>selectYearSb</tabstop>
+  <tabstop>showPaymentsDetailsBtn</tabstop>
+  <tabstop>higherThanThreeBtn</tabstop>
+  <tabstop>threeMonthsBtn</tabstop>
+  <tabstop>twoMonthsBtn</tabstop>
+  <tabstop>oneMonthBtn</tabstop>
+  <tabstop>monthToPayCb</tabstop>
+  <tabstop>confirmPaymentBtn</tabstop>
+  <tabstop>showAllBtn</tabstop>
+  <tabstop>defaultsPaymentBtn</tabstop>
+  <tabstop>correctPaymentBtn</tabstop>
+  <tabstop>paymentsPrintBtn</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
