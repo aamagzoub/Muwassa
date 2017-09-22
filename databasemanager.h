@@ -59,6 +59,12 @@ private:
     QString getCurrentmonth();
     void setAllRefNoList(QList<QString> allRefNoList);
     QList<QString> getAllRefNoList();
+
+    QString hostName = "localhost";
+    int port = 3306;
+    QString databaseName = "muwassa_db";
+    QString userName = "amgad";
+    QString userPass = "123";
 };
 
 #endif // DATABASEMANAGER_H

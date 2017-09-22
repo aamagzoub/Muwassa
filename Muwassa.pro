@@ -29,6 +29,7 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui \
     addmembersdialog.ui
+
 QT += printsupport
 QT += sql
 

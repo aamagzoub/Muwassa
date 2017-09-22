@@ -23,12 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mpAddMembersDialog = new AddMembersDialog;
 
     ui->appStatus->setText(mpDbManager->db_invocation());
-    ui->appStatus->setText(mpDbManager->db_table_creation());
-
-    ui->oneMonthBtn->setFixedSize(30,32);
-    ui->twoMonthsBtn->setFixedSize(30,32);
-    ui->threeMonthsBtn->setFixedSize(30,32);
-    ui->higherThanThreeBtn->setFixedSize(30,32);
+    //ui->appStatus->setText(mpDbManager->db_table_creation());
 
     ui->label_3->setStyleSheet("QLabel { background-color : black; color : white}");
     ui->label_6->setStyleSheet("QLabel { background-color : black; color : white}");

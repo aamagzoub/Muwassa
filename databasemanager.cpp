@@ -15,9 +15,21 @@ QString DatabaseManager::db_invocation()
     dir.mkdir(appDataPath);
 
     db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setHostName(hostName);
+    db.setPort(port);
+    db.setDatabaseName(appDataPath+"/muwassa_db");
+    db.setUserName(userName);
+    db.setPassword(userPass);
+
+//    db = QSqlDatabase::addDatabase("QMYSQL");
+//    db.setHostName(hostName);
+//    db.setPort(port);
+//    db.setDatabaseName(databaseName);
+//    db.setUserName(userName);
+//    db.setPassword(userPass);
+
     qDebug() << appDataPath;
 
-    db.setDatabaseName(appDataPath+"/muwassa_db");
     if (!db.open()){
         return db.lastError().text();
     }
