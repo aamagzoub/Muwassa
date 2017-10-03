@@ -26,7 +26,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->label_3->setStyleSheet("QLabel { background-color : black; color : white}");
     ui->label_6->setStyleSheet("QLabel { background-color : black; color : white}");
     ui->label_9->setStyleSheet("QLabel { background-color : black; color : white}");
+    ui->label_10->setStyleSheet("QLabel { background-color : black; color : white}");
     ui->label_13->setStyleSheet("QLabel { background-color : black; color : white}");
+    ui->label_14->setStyleSheet("QLabel { background-color : black; color : white}");
 
     ui->appStatus->setStyleSheet("QLabel { background-color :white ; color : #000000; border-radius: 10px}");
     ui->appStatus_2->setStyleSheet("QLabel { background-color : darkCyan; color : white; border-radius: 10px}");
@@ -47,7 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->selectMethodSB->setVisible(false);
     ui->basicInfoTV->setTextElideMode(Qt::ElideMiddle);
 
-    ui->groupBox->hide();
+    //ui->groupBox->hide();
     setCurrentMonth();
 
     setYear();
