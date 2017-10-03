@@ -2,10 +2,6 @@
 #include "ui_addmembersdialog.h"
 #include <QMessageBox>
 
-//static const char * ksOrganization{"DevSuda"};
-//static const char * ksApp         {"Muwassa"};
-//static const char * ksKey         {"geometery"};
-
 AddMembersDialog::AddMembersDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::AddMembersDialog)
@@ -78,44 +74,61 @@ void AddMembersDialog::SaveMemberBasicInfo(QString ref_no){
             ui->memebershipDate->setDate(QDate::currentDate());
 
             ui->statusLbl->setText("   تم الحفظ بنجاح ");
+            setQMessageActionVaue(false);
 
         }
 
     } else {
 
-        reply = QMessageBox::question(this, "تحديث",
-                                      "هل انت متأكد؟  ",
-                                      QMessageBox::Yes|QMessageBox::No);
-        if (reply == QMessageBox::Yes) {
-            if(!mpDbManager->db_data_update(ref_no,name,mother,tel,email,post_code,address,
-                                            spouse,mother_in_law,childern,
-                                            membership_Date,payment_method,payment,status)){
-                ui->statusLbl->setText("Error: data update ...");
-            } else {
-                ui->refNo->clear();
-                ui->name->clear();
-                ui->mother->clear();
-                ui->tel->clear();
-                ui->email->clear();
-                ui->postCode->clear();
-                ui->address->clear();
-                ui->spouse->clear();
-                ui->motherInLaw->clear();
-                ui->childern->clear();
-                ui->memebershipDate->setDate(QDate::currentDate());
-
-                ui->statusLbl->setText("   تم التحديث بنجاح ");
-            }
-
+        if(!getQMessageActionVaue()){
+            reply = QMessageBox::information(this, "تحذير",
+                                          " هذا الرقم المتسلسل موجود مسبقاً !!   ",
+                                          QMessageBox::Ok);
         } else {
 
+            bool currentStatus = mpDbManager->isMemStatusAct(ref_no);
+            if(currentStatus){
+                status = "نشط";
+            } else {
+                status = "غير نشط";
+            }
+
+            reply = QMessageBox::question(this, "تحديث",
+                                          " هل فعلاً تريد/تريدين تحديث بيانات هذا المشترك ؟     ",
+                                          QMessageBox::Yes|QMessageBox::No);
+
+            if (reply == QMessageBox::Yes) {
+                if(!mpDbManager->db_data_update(ref_no,name,mother,tel,email,post_code,address,
+                                                spouse,mother_in_law,childern,
+                                                membership_Date,payment_method,payment,status)){
+                    ui->statusLbl->setText("Error: data update ...");
+                } else {
+                    ui->refNo->clear();
+                    ui->name->clear();
+                    ui->mother->clear();
+                    ui->tel->clear();
+                    ui->email->clear();
+                    ui->postCode->clear();
+                    ui->address->clear();
+                    ui->spouse->clear();
+                    ui->motherInLaw->clear();
+                    ui->childern->clear();
+                    ui->memebershipDate->setDate(QDate::currentDate());
+
+                    ui->statusLbl->setText("   تم التحديث بنجاح ");
+                    setQMessageActionVaue(false);
+                }
+            } else {
+
+            }
+
         }
+
     }
 }
 
 
-void AddMembersDialog::Exit()
-{
+void AddMembersDialog::Exit(){
     close();
 }
 
@@ -128,4 +141,12 @@ void AddMembersDialog::closeEvent(QCloseEvent *event){
 void AddMembersDialog::readSettings(){
     QSettings settings("DevSuda", "Muwassa");
     restoreGeometry(settings.value("geometery").toByteArray());
+}
+
+void AddMembersDialog::setQMessageActionVaue(bool value){
+    qMessageBoxActionValue = value;
+}
+
+bool AddMembersDialog::getQMessageActionVaue(){
+    return qMessageBoxActionValue;
 }

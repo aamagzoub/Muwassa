@@ -205,14 +205,15 @@ bool DatabaseManager::db_data_deletion(QString refNo){
         return false;
     }
 
-    while (lastYear >= 2014) {
+    while (lastYear >= 2016) {
         query.prepare("DELETE FROM payments_" + yearToDelete + " WHERE refNo = (:refNo)");
         query.bindValue(":refNo",refNo);
-        if (!query.exec())
-        {
-            qDebug() << "Error" << query.lastError().text();
-            return false;
-        }
+        query.exec();
+//        if (!query.exec())
+//        {
+//            qDebug() << "Error" << query.lastError().text();
+//            return false;
+//        }
         lastYear = lastYear - 1;
         yearToDelete = QString::number(lastYear);
     }

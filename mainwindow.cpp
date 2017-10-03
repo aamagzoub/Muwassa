@@ -9,8 +9,6 @@
 #include <QPrintDialog>
 #include <QTextDocument>
 
-#define MYNULL NULL
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -30,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->label_9->setStyleSheet("QLabel { background-color : black; color : white}");
     ui->label_13->setStyleSheet("QLabel { background-color : black; color : white}");
 
-    ui->appStatus->setStyleSheet("QLabel { background-color :white ; color : #c0392b; border-radius: 10px}");
+    ui->appStatus->setStyleSheet("QLabel { background-color :white ; color : #000000; border-radius: 10px}");
     ui->appStatus_2->setStyleSheet("QLabel { background-color : darkCyan; color : white; border-radius: 10px}");
     ui->appStatus_3->setStyleSheet("QLabel { background-color : darkCyan; color : white; border-radius: 10px}");
     ui->appStatus_6->setStyleSheet("QLabel { background-color : darkCyan; color : white; border-radius: 10px}");
@@ -49,6 +47,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->selectMethodSB->setVisible(false);
     ui->basicInfoTV->setTextElideMode(Qt::ElideMiddle);
 
+    ui->groupBox->hide();
     setCurrentMonth();
 
     setYear();
@@ -104,7 +103,7 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->threeMonthsBtn->setEnabled(false);
         ui->higherThanThreeBtn->setEnabled(false);
         break;
-   }
+    }
 }
 
 void MainWindow::FindMember(){
@@ -151,6 +150,7 @@ void MainWindow::DeleteMember(){
     if (reply == QMessageBox::Yes) {
         if(!mpDbManager->db_data_deletion(ref_no)){
             ui->appStatus->setText("Error: data deletion ...");
+            showActiveMembers();
         } else{
             ui->appStatus->setText("   تم المسح بنجاح ");
             showActiveMembers();
@@ -160,26 +160,26 @@ void MainWindow::DeleteMember(){
     DisnableEditRemoveBtn();
 }
 
-
-void MainWindow::startEditing(){
-    enabledAddMemberFields();
-    EditMemberBasicInfo();
-}
-
 void MainWindow::startViewing(){
     disabledAddMemberFields();
-    EditMemberBasicInfo();
+    fillMemberBasicInfoUi4EditOrView();
 }
 
 void MainWindow::startAddition(){
+    mpAddMembersDialog->setQMessageActionVaue(false);
     enabledAddMemberFields();
     openAddMemberForm();
 }
 
+void MainWindow::startEditing(){
+    mpAddMembersDialog->setQMessageActionVaue(true);
+    enabledAddMemberFields();
+    fillMemberBasicInfoUi4EditOrView();
+}
 
-void MainWindow::EditMemberBasicInfo(){
+void MainWindow::fillMemberBasicInfoUi4EditOrView(){
 
-    clearAddMemberFields();
+    clearAddMemberUiFields();
 
     QString refNo;
     QString name;
@@ -201,7 +201,7 @@ void MainWindow::EditMemberBasicInfo(){
     QModelIndex ref_no_value = mpShowingModel->index(row_index, 0);
     QString ref_no_string = ref_no_value.data().toString();
 
-    mpReturnedRecord = mpDbManager->getRecordForEditOrFind(ref_no_string, getUserAction(),MYNULL);
+    mpReturnedRecord = mpDbManager->getRecordForEditOrFind(ref_no_string, getUserAction(),-1);
 
     if (getUserAction() == 1){
         modelToShow = mpReturnedRecord;
@@ -244,7 +244,6 @@ void MainWindow::EditMemberBasicInfo(){
 
     showActiveMembers();
     showCurrentPayments();
-
     DisnableEditRemoveBtn();
 }
 
@@ -468,7 +467,7 @@ void MainWindow::showActiveMembers(){
     ui->deactivateMemBtn->setEnabled(false);
     ui->showAllMemberInfoBtn->setVisible(false);
     ui->inactiveMemBtn->setVisible(true);
-    mpShowingModel = mpDbManager->getRecordForEditOrFind(ref_no_string, getUserAction(),MYNULL);
+    mpShowingModel = mpDbManager->getRecordForEditOrFind(ref_no_string, getUserAction(),-1);
     displayTableOnGui(mpShowingModel);
 }
 
@@ -628,15 +627,12 @@ void MainWindow::sendEmail(){
 
 void MainWindow::openAddMemberForm(){
 
-    clearAddMemberFields();
+    clearAddMemberUiFields();
     mpAddMembersDialog->ui->statusLbl->clear();
 
     mpAddMembersDialog->readSettings();
     mpAddMembersDialog->exec();
-
-    if (!mpAddMembersDialog->cancelValue == 1){
-        showActiveMembers();
-    }
+    showActiveMembers();
     DisnableEditRemoveBtn();
     showCurrentPayments();
 }
@@ -710,7 +706,7 @@ void MainWindow::enabledAddMemberFields(){
     mpAddMembersDialog->ui->saveBtn->setEnabled(true);
 }
 
-void MainWindow::clearAddMemberFields(){
+void MainWindow::clearAddMemberUiFields(){
     mpAddMembersDialog->ui->refNo->clear();
     mpAddMembersDialog->ui->name->clear();
     mpAddMembersDialog->ui->mother->clear();
@@ -741,9 +737,7 @@ void MainWindow::EnableEditRemoveBtn(){
     QModelIndex index = mpShowingModel->index(row_index, 0);
     QString ref_no = index.data().toString();
     index.data().clear();
-    qDebug() << ref_no;
     bool status = mpDbManager->isMemStatusAct(ref_no);
-    qDebug() << status;
 
     if(status == true){
         ui->activateMemBtn->setEnabled(false);

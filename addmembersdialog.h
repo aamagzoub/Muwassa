@@ -3,7 +3,6 @@
 
 #include <QDialog>
 #include <QMessageBox>
-
 #include "databasemanager.h"
 
 namespace Ui {
@@ -18,7 +17,9 @@ public:
     explicit AddMembersDialog(QWidget *parent = 0);
     Ui::AddMembersDialog *ui;
     void readSettings();
-    int cancelValue;
+    bool qMessageBoxActionValue;
+    void setQMessageActionVaue(bool);
+
     ~AddMembersDialog();
 
 private:
@@ -26,8 +27,9 @@ private:
     QMessageBox::StandardButton reply;
     void SaveMemberBasicInfo(QString ref_no);
     void EditMemberBasicInfo();
-    void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent *event);    
 
+    bool getQMessageActionVaue();
 
 private slots:
     void Exit();

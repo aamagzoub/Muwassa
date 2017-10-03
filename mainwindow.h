@@ -62,7 +62,7 @@ private:
 
     void printThis(QTableView *tableToPrint);
     void setSearchItemsInvisible();
-    void clearAddMemberFields();
+    void clearAddMemberUiFields();
     void DisnableEditRemoveBtn();
     void enableFeatures();
     void disableFeatures();
@@ -77,7 +77,7 @@ private slots:
     void Exit();
     void displayAllInPaymentTab();
     void FindMember();
-    void EditMemberBasicInfo();
+    void fillMemberBasicInfoUi4EditOrView();
     void EnableEditRemoveBtn();
     void SelectedRows();
     void DeleteMember();
