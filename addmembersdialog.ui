@@ -44,7 +44,7 @@
       <item row="8" column="3">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="QLineEdit" name="mother">
+         <widget class="QLineEdit" name="mother1">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -72,7 +72,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="motherLabel">
+         <widget class="QLabel" name="motherLabel1">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -120,7 +120,7 @@
       <item row="9" column="3">
        <layout class="QHBoxLayout" name="horizontalLayout_7">
         <item>
-         <widget class="QLineEdit" name="childern">
+         <widget class="QLineEdit" name="childern1">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -151,7 +151,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="childernLabel">
+         <widget class="QLabel" name="childernLabel1">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -183,7 +183,7 @@
       <item row="7" column="3">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QLineEdit" name="name">
+         <widget class="QLineEdit" name="name1">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -214,7 +214,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="nameLabel">
+         <widget class="QLabel" name="nameLabel1">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -246,7 +246,7 @@
       <item row="8" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
-         <widget class="QLineEdit" name="motherInLaw">
+         <widget class="QLineEdit" name="motherInLaw1">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -274,7 +274,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="motherInLawLabel">
+         <widget class="QLabel" name="motherInLawLabel1">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -306,7 +306,7 @@
       <item row="7" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
-         <widget class="QLineEdit" name="spouse">
+         <widget class="QLineEdit" name="spouse1">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -334,7 +334,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="spouseLabel">
+         <widget class="QLabel" name="spouseLabel1_2">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -379,7 +379,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QLineEdit" name="refNo">
+         <widget class="QLineEdit" name="refNo1">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -407,7 +407,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="refNoLabel">
+         <widget class="QLabel" name="refNoLabel1">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -455,7 +455,7 @@
       <item row="12" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_6">
         <item>
-         <widget class="QLineEdit" name="address">
+         <widget class="QLineEdit" name="address1">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -483,7 +483,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="addressLabel">
+         <widget class="QLabel" name="addressLabel1">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -515,7 +515,7 @@
       <item row="11" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_12">
         <item>
-         <widget class="QLineEdit" name="email">
+         <widget class="QLineEdit" name="email1">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -543,7 +543,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="emailLabel">
+         <widget class="QLabel" name="emailLabel1">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -575,7 +575,7 @@
       <item row="11" column="3">
        <layout class="QHBoxLayout" name="horizontalLayout_8">
         <item>
-         <widget class="QLineEdit" name="tel">
+         <widget class="QLineEdit" name="tel1">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -609,7 +609,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="telLabel">
+         <widget class="QLabel" name="telLabel1">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -641,7 +641,7 @@
       <item row="12" column="3">
        <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
-         <widget class="QLineEdit" name="postCode">
+         <widget class="QLineEdit" name="postCode1">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -669,7 +669,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="postCodeLabel">
+         <widget class="QLabel" name="postCodeLabel1">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -714,7 +714,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QDateEdit" name="memebershipDate">
+         <widget class="QDateEdit" name="memebershipDate1">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -768,7 +768,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="dateEditLabel">
+         <widget class="QLabel" name="dateEditLabel1">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -810,7 +810,7 @@
       <item row="5" column="3">
        <layout class="QHBoxLayout" name="horizontalLayout_9">
         <item>
-         <widget class="QSpinBox" name="payment">
+         <widget class="QSpinBox" name="payment1">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -850,7 +850,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="paymentMethod">
+         <widget class="QComboBox" name="paymentMethod1">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -898,7 +898,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="methodLabel">
+         <widget class="QLabel" name="methodLabel1">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -977,7 +977,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="spouseLabel_2">
+         <widget class="QLabel" name="spouseLabel1">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -1028,14 +1028,14 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="0" column="0">
-       <widget class="QPushButton" name="closeFormBtn">
+       <widget class="QPushButton" name="closeFormBtn1">
         <property name="text">
          <string>خروج</string>
         </property>
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QPushButton" name="saveBtn">
+       <widget class="QPushButton" name="saveBtn1">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -1063,7 +1063,7 @@
        </widget>
       </item>
       <item row="0" column="3">
-       <widget class="QLabel" name="statusLbl">
+       <widget class="QLabel" name="statusLbl1">
         <property name="text">
          <string/>
         </property>
@@ -1088,21 +1088,21 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>refNo</tabstop>
-  <tabstop>memebershipDate</tabstop>
-  <tabstop>paymentMethod</tabstop>
-  <tabstop>payment</tabstop>
-  <tabstop>name</tabstop>
-  <tabstop>spouse</tabstop>
-  <tabstop>mother</tabstop>
-  <tabstop>motherInLaw</tabstop>
-  <tabstop>childern</tabstop>
-  <tabstop>tel</tabstop>
-  <tabstop>email</tabstop>
-  <tabstop>postCode</tabstop>
-  <tabstop>address</tabstop>
-  <tabstop>saveBtn</tabstop>
-  <tabstop>closeFormBtn</tabstop>
+  <tabstop>refNo1</tabstop>
+  <tabstop>memebershipDate1</tabstop>
+  <tabstop>paymentMethod1</tabstop>
+  <tabstop>payment1</tabstop>
+  <tabstop>name1</tabstop>
+  <tabstop>spouse1</tabstop>
+  <tabstop>mother1</tabstop>
+  <tabstop>motherInLaw1</tabstop>
+  <tabstop>childern1</tabstop>
+  <tabstop>tel1</tabstop>
+  <tabstop>email1</tabstop>
+  <tabstop>postCode1</tabstop>
+  <tabstop>address1</tabstop>
+  <tabstop>saveBtn1</tabstop>
+  <tabstop>closeFormBtn1</tabstop>
   <tabstop>mem_state</tabstop>
  </tabstops>
  <resources/>

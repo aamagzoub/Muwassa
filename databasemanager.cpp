@@ -8,30 +8,21 @@
 
 QString DatabaseManager::db_invocation()
 {
-    QString appDataPath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
-
     appDataPath.append("/Muwassa");
     QDir dir;
     dir.mkdir(appDataPath);
 
-    db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setHostName(hostName);
-    db.setPort(port);
-    db.setDatabaseName(appDataPath+"/muwassa_db");
-    db.setUserName(userName);
-    db.setPassword(userPass);
-
-//    db = QSqlDatabase::addDatabase("QMYSQL");
-//    db.setHostName(hostName);
-//    db.setPort(port);
-//    db.setDatabaseName(databaseName);
-//    db.setUserName(userName);
-//    db.setPassword(userPass);
+    theDatabase.setHostName(hostName);
+    theDatabase.setPort(port);
+    theDatabase.setDatabaseName(appDataPath + databaseName);
+    theDatabase.setUserName(userName);
+    theDatabase.setPassword(userPass);
 
     qDebug() << appDataPath;
 
-    if (!db.open()){
-        return db.lastError().text();
+    if (!theDatabase.open()){
+        qDebug() << theDatabase.lastError().text();
+        return "قاعدة البيانات لم تفتح .. وتوجد مشكلة في حفظ البيانات !!";
     }
 
     setCurrentYear(QDate::currentDate().year());
@@ -42,7 +33,7 @@ QString DatabaseManager::db_invocation()
     QList<QString> all_refNo_list;
     setAllRefNoList(all_refNo_list);
 
-    return "Database is open";
+    return "ثم إنشاء قاعدة البيانات بنجاح";
 }
 
 QString DatabaseManager::db_table_creation(){
@@ -67,7 +58,7 @@ QString DatabaseManager::db_table_creation(){
                   "status VARCHAR(30))");
     if(!query.exec()) {
         qDebug() << "Error" << query.lastError().text();
-        return query.lastError().text();
+        return "يوجد خظأ في إنشاء جداول قاعدة البيانات !!";
     }
 
 
@@ -245,7 +236,11 @@ QSqlQueryModel *DatabaseManager::getRecordForEditOrFind(QString searchValue, int
 
     if (selectionMode == 1)
     {
-        query.prepare("SELECT * FROM basic_info WHERE status = 'نشط' ORDER BY refNo");
+        if (isMemStatusAct(searchValue)||searchValue == ""){
+            query.prepare("SELECT * FROM basic_info WHERE status = 'نشط' ORDER BY refNo");
+        } else {
+            query.prepare("SELECT * FROM basic_info WHERE status = 'غير نشط' ORDER BY refNo");
+        }
         query.exec();
         model->setQuery(query);
 

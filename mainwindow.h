@@ -5,7 +5,6 @@
 #include "databasemanager.h"
 #include "EmailingService.h"
 #include "printingservice.h"
-#include "addmembersdialog.h"
 #include "ui_addmembersdialog.h"
 
 #include <QTableView>
@@ -24,6 +23,9 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    void setShowActOrInact(bool value);
+    bool getShowActOrInact() const;
+
 private:
     Ui::MainWindow *ui;
     DatabaseManager *mpDbManager;
@@ -34,10 +36,12 @@ private:
     QSqlQueryModel *mpSearchModel;
     QSqlQueryModel *mpPaymentsToConfirmModel;
     QSqlQueryModel *mpMonthAlertModel;
-    AddMembersDialog *mpAddMembersDialog;
     QModelIndexList mpSelectedRowsIndexesList;
     QMessageBox::StandardButton reply;
     bool isItHistory;
+    bool qMessageBoxActionValue;
+    bool showActOrInact;
+
 
     int currentMonth;
     int userAction;
@@ -73,6 +77,9 @@ private:
     void hideColumns();
     void showColumns();
 
+    void SaveMemberBasicInfo(QString ref_no);
+    void setQMessageActionVaue(bool value);
+    bool getQMessageActionVaue();
 private slots:
     void Exit();
     void displayAllInPaymentTab();
@@ -100,7 +107,6 @@ private slots:
     void showPaymentsHistory();
     void displayPaymentsModel(QSqlQueryModel *monthAlertModel);
     void sendEmail();
-    void openAddMemberForm();
     void setSearchItemsVisible();
     void setPaymentsItemsInvislable();
     void enableGoSearchBtn();
@@ -108,12 +114,14 @@ private slots:
     void enabledAddMemberFields();
     void startEditing();
     void startViewing();
-    void startAddition();
     void checkYear();
     void displaySlectedMemberPayments();
     void showInactiveMembers();
     void deactivateMembership();
     void activateMembership();
+    void IsRefNoValid();
+    void startAddition();
+    void DisableAddMemebrBtn();
 };
 
 #endif // MAINWINDOW_H

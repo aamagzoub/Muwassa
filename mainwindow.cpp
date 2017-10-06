@@ -18,17 +18,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
     mpDbManager = new DatabaseManager;
     mpEmailingService = new EmailingService;
-    mpAddMembersDialog = new AddMembersDialog;
 
     ui->appStatus->setText(mpDbManager->db_invocation());
-    //ui->appStatus->setText(mpDbManager->db_table_creation());
+    ui->appStatus->setText(mpDbManager->db_table_creation());
 
     ui->label_3->setStyleSheet("QLabel { background-color : black; color : white}");
     ui->label_6->setStyleSheet("QLabel { background-color : black; color : white}");
     ui->label_9->setStyleSheet("QLabel { background-color : black; color : white}");
     ui->label_10->setStyleSheet("QLabel { background-color : black; color : white}");
     ui->label_13->setStyleSheet("QLabel { background-color : black; color : white}");
-    ui->label_14->setStyleSheet("QLabel { background-color : black; color : white}");
 
     ui->appStatus->setStyleSheet("QLabel { background-color :white ; color : #000000; border-radius: 10px}");
     ui->appStatus_2->setStyleSheet("QLabel { background-color : darkCyan; color : white; border-radius: 10px}");
@@ -48,8 +46,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->selectYearSb->setValue((QDate::currentDate().year()));
     ui->selectMethodSB->setVisible(false);
     ui->basicInfoTV->setTextElideMode(Qt::ElideMiddle);
+    ui->memebershipDate->setDate(QDate::currentDate());
 
-    //ui->groupBox->hide();
     setCurrentMonth();
 
     setYear();
@@ -87,6 +85,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->inactiveMemBtn,SIGNAL(clicked()),this,SLOT(showInactiveMembers()));
     connect(ui->deactivateMemBtn,SIGNAL(clicked()),this,SLOT(deactivateMembership()));
     connect(ui->activateMemBtn,SIGNAL(clicked()),this,SLOT(activateMembership()));
+    connect(ui->saveBtn,SIGNAL(clicked()),this,SLOT(IsRefNoValid()));
 
 
     switch(getCurrentMonth()){
@@ -106,6 +105,137 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->higherThanThreeBtn->setEnabled(false);
         break;
     }
+}
+
+void MainWindow::DisableAddMemebrBtn(){
+    ui->addMemberBtn->setEnabled(false);
+}
+
+void MainWindow::startAddition(){
+    setQMessageActionVaue(false);
+    enabledAddMemberFields();
+    clearAddMemberUiFields();
+}
+
+void MainWindow::IsRefNoValid(){
+    QString ref_no;
+    if (!ui->refNo->text().isEmpty()){
+        ref_no = ui->refNo->text();
+        SaveMemberBasicInfo(ref_no);
+    } else {
+        ui->statusLbl->setText("   الرجاء ادخال الرقم المتسلسل ...");
+    }
+}
+
+void MainWindow::SaveMemberBasicInfo(QString ref_no){
+
+    QString name = ui->name->text();
+    QString mother = ui->mother->text();
+    QString tel = ui->tel->text();
+    QString email = ui->email->text();
+    QString post_code = ui->postCode->text();
+    QString address = ui->address->text();
+    QString spouse = ui->spouse->text();
+    QString mother_in_law = ui->motherInLaw->text();
+    QString childern = ui->childern->text();
+    QString membership_Date = ui->memebershipDate->text();
+    QString payment = ui->payment->text();
+    QString payment_method = ui->paymentMethod->currentText();
+    QString status = ui->mem_state->text();
+
+    if(!mpDbManager->checkRefNoExist(ref_no)){
+
+        status = "نشط";
+
+        if(!mpDbManager->db_data_insertion(ref_no,name,mother,tel,email,post_code,address,
+                                           spouse,mother_in_law,childern,
+                                           membership_Date,payment_method,payment,status)){
+            ui->statusLbl->setText("Error: data insertion ...");
+        } else {
+            ui->refNo->clear();
+            ui->name->clear();
+            ui->mother->clear();
+            ui->tel->clear();
+            ui->email->clear();
+            ui->postCode->clear();
+            ui->address->clear();
+            ui->spouse->clear();
+            ui->motherInLaw->clear();
+            ui->childern->clear();
+            ui->memebershipDate->setDate(QDate::currentDate());
+
+            ui->statusLbl->setText("   تم الحفظ المشترك رقم:  "+ ref_no + " بنجاح");
+            if(getShowActOrInact()){
+                showActiveMembers();
+            } else {
+                showInactiveMembers();
+            }
+            showCurrentPayments();
+            setQMessageActionVaue(false);
+
+        }
+
+    } else {
+
+        if(!getQMessageActionVaue()){
+            reply = QMessageBox::information(this, "تحذير",
+                                          " هذا الرقم المتسلسل موجود مسبقاً !!   ",
+                                          QMessageBox::Ok);
+        } else {
+
+            bool currentStatus = mpDbManager->isMemStatusAct(ref_no);
+            if(currentStatus){
+                status = "نشط";
+            } else {
+                status = "غير نشط";
+            }
+
+            reply = QMessageBox::question(this, "تحديث",
+                                          " هل فعلاً تريد/تريدين تحديث بيانات هذا المشترك ؟     ",
+                                          QMessageBox::Yes|QMessageBox::No);
+
+            if (reply == QMessageBox::Yes) {
+                if(!mpDbManager->db_data_update(ref_no,name,mother,tel,email,post_code,address,
+                                                spouse,mother_in_law,childern,
+                                                membership_Date,payment_method,payment,status)){
+                    ui->statusLbl->setText("Error: data update ...");
+                } else {
+                    ui->refNo->clear();
+                    ui->name->clear();
+                    ui->mother->clear();
+                    ui->tel->clear();
+                    ui->email->clear();
+                    ui->postCode->clear();
+                    ui->address->clear();
+                    ui->spouse->clear();
+                    ui->motherInLaw->clear();
+                    ui->childern->clear();
+                    ui->memebershipDate->setDate(QDate::currentDate());
+
+                    ui->statusLbl->setText("   تم التحديث بنجاح ");
+                    if(getShowActOrInact()){
+                        showActiveMembers();
+                    } else {
+                        showInactiveMembers();
+                    }
+                    showCurrentPayments();
+                    setQMessageActionVaue(false);
+                }
+            } else {
+
+            }
+
+        }
+
+    }
+}
+
+void MainWindow::setQMessageActionVaue(bool value){
+    qMessageBoxActionValue = value;
+}
+
+bool MainWindow::getQMessageActionVaue(){
+    return qMessageBoxActionValue;
 }
 
 void MainWindow::FindMember(){
@@ -155,7 +285,11 @@ void MainWindow::DeleteMember(){
             showActiveMembers();
         } else{
             ui->appStatus->setText("   تم المسح بنجاح ");
-            showActiveMembers();
+            if(getShowActOrInact()){
+                showActiveMembers();
+            } else {
+                showInactiveMembers();
+            }
             showCurrentPayments();
         }
     }
@@ -167,14 +301,9 @@ void MainWindow::startViewing(){
     fillMemberBasicInfoUi4EditOrView();
 }
 
-void MainWindow::startAddition(){
-    mpAddMembersDialog->setQMessageActionVaue(false);
-    enabledAddMemberFields();
-    openAddMemberForm();
-}
-
 void MainWindow::startEditing(){
-    mpAddMembersDialog->setQMessageActionVaue(true);
+    setShowActOrInact(false);
+    setQMessageActionVaue(true);
     enabledAddMemberFields();
     fillMemberBasicInfoUi4EditOrView();
 }
@@ -227,24 +356,28 @@ void MainWindow::fillMemberBasicInfoUi4EditOrView(){
     payment = modelToShow->record(row_index).value(12).toInt();
     status = modelToShow->record(row_index).value(13).toString();
 
-    mpAddMembersDialog->ui->refNo->setText(refNo);
-    mpAddMembersDialog->ui->name->setText(name);
-    mpAddMembersDialog->ui->mother->setText(mother);
-    mpAddMembersDialog->ui->tel->setText(tel);
-    mpAddMembersDialog->ui->email->setText(email);
-    mpAddMembersDialog->ui->postCode->setText(postcode);
-    mpAddMembersDialog->ui->address->setText(address);
-    mpAddMembersDialog->ui->spouse->setText(spouse);
-    mpAddMembersDialog->ui->motherInLaw->setText(mother_in_law);
-    mpAddMembersDialog->ui->childern->setText(childern);
-    mpAddMembersDialog->ui->memebershipDate->setDate(membership_Date);
-    mpAddMembersDialog->ui->paymentMethod->setCurrentText(payment_method);
-    mpAddMembersDialog->ui->payment->setValue(payment);
-    mpAddMembersDialog->ui->mem_state->setText(status);
-    mpAddMembersDialog->readSettings();
-    mpAddMembersDialog->exec();
+    ui->refNo->setText(refNo);
+    ui->name->setText(name);
+    ui->mother->setText(mother);
+    ui->tel->setText(tel);
+    ui->email->setText(email);
+    ui->postCode->setText(postcode);
+    ui->address->setText(address);
+    ui->spouse->setText(spouse);
+    ui->motherInLaw->setText(mother_in_law);
+    ui->childern->setText(childern);
+    ui->memebershipDate->setDate(membership_Date);
+    ui->paymentMethod->setCurrentText(payment_method);
+    ui->payment->setValue(payment);
+    ui->mem_state->setText(status);
 
-    showActiveMembers();
+
+    if(getShowActOrInact()){
+        showActiveMembers();
+    } else {
+        showInactiveMembers();
+    }
+
     showCurrentPayments();
     DisnableEditRemoveBtn();
 }
@@ -461,12 +594,15 @@ void MainWindow::GetHigherThanThreeAlerts(){
 }
 
 void MainWindow::showActiveMembers(){
+    ui->deactivateMemBtn->show();
+    ui->activateMemBtn->hide();
+    setShowActOrInact(true);
     QString ref_no_string;
     setUserAction(1);
     ui->editBtn->setEnabled(false);
     ui->removeBtn->setEnabled(false);
-    ui->activateMemBtn->setEnabled(false);
-    ui->deactivateMemBtn->setEnabled(false);
+    ui->activateMemBtn->setEnabled(true);
+    ui->deactivateMemBtn->setEnabled(true);
     ui->showAllMemberInfoBtn->setVisible(false);
     ui->inactiveMemBtn->setVisible(true);
     mpShowingModel = mpDbManager->getRecordForEditOrFind(ref_no_string, getUserAction(),-1);
@@ -474,10 +610,13 @@ void MainWindow::showActiveMembers(){
 }
 
 void MainWindow::showInactiveMembers(){
+    ui->deactivateMemBtn->hide();
+    ui->activateMemBtn->show();
+    setShowActOrInact(false);
     ui->editBtn->setEnabled(false);
     ui->removeBtn->setEnabled(false);
-    ui->activateMemBtn->setEnabled(false);
-    ui->deactivateMemBtn->setEnabled(false);
+    ui->activateMemBtn->setEnabled(true);
+    ui->deactivateMemBtn->setEnabled(true);
     ui->showAllMemberInfoBtn->setVisible(true);
     ui->inactiveMemBtn->setVisible(false);
     mpShowingModel = mpDbManager->getInactiveMembers();
@@ -610,6 +749,16 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::setShowActOrInact(bool value)
+{
+    showActOrInact = value;
+}
+
+bool MainWindow::getShowActOrInact() const
+{
+    return showActOrInact;
+}
+
 void MainWindow::printBasicInfo(){
     printThis(ui->basicInfoTV);
 }
@@ -627,17 +776,6 @@ void MainWindow::sendEmail(){
 
 }
 
-void MainWindow::openAddMemberForm(){
-
-    clearAddMemberUiFields();
-    mpAddMembersDialog->ui->statusLbl->clear();
-
-    mpAddMembersDialog->readSettings();
-    mpAddMembersDialog->exec();
-    showActiveMembers();
-    DisnableEditRemoveBtn();
-    showCurrentPayments();
-}
 
 void MainWindow::setSearchItemsInvisible(){
     ui->findBtn_2->setVisible(true);
@@ -675,53 +813,54 @@ void MainWindow::enableGoSearchBtn(){
 }
 
 void MainWindow::disabledAddMemberFields(){
-    mpAddMembersDialog->ui->refNo->setEnabled(false);
-    mpAddMembersDialog->ui->name->setEnabled(false);
-    mpAddMembersDialog->ui->mother->setEnabled(false);
-    mpAddMembersDialog->ui->motherInLaw->setEnabled(false);
-    mpAddMembersDialog->ui->spouse->setEnabled(false);
-    mpAddMembersDialog->ui->childern->setEnabled(false);
-    mpAddMembersDialog->ui->tel->setEnabled(false);
-    mpAddMembersDialog->ui->email->setEnabled(false);
-    mpAddMembersDialog->ui->postCode->setEnabled(false);
-    mpAddMembersDialog->ui->address->setEnabled(false);
-    mpAddMembersDialog->ui->memebershipDate->setEnabled(false);
-    mpAddMembersDialog->ui->paymentMethod->setEnabled(false);
-    mpAddMembersDialog->ui->payment->setEnabled(false);
-    mpAddMembersDialog->ui->saveBtn->setEnabled(false);
+
+    ui->refNo->setEnabled(false);
+    ui->name->setEnabled(false);
+    ui->mother->setEnabled(false);
+    ui->motherInLaw->setEnabled(false);
+    ui->spouse->setEnabled(false);
+    ui->childern->setEnabled(false);
+    ui->tel->setEnabled(false);
+    ui->email->setEnabled(false);
+    ui->postCode->setEnabled(false);
+    ui->address->setEnabled(false);
+    ui->memebershipDate->setEnabled(false);
+    ui->paymentMethod->setEnabled(false);
+    ui->payment->setEnabled(false);
+    ui->saveBtn->setEnabled(false);
 }
 
 void MainWindow::enabledAddMemberFields(){
-    mpAddMembersDialog->ui->refNo->setEnabled(true);
-    mpAddMembersDialog->ui->name->setEnabled(true);
-    mpAddMembersDialog->ui->mother->setEnabled(true);
-    mpAddMembersDialog->ui->motherInLaw->setEnabled(true);
-    mpAddMembersDialog->ui->spouse->setEnabled(true);
-    mpAddMembersDialog->ui->childern->setEnabled(true);
-    mpAddMembersDialog->ui->tel->setEnabled(true);
-    mpAddMembersDialog->ui->email->setEnabled(true);
-    mpAddMembersDialog->ui->postCode->setEnabled(true);
-    mpAddMembersDialog->ui->address->setEnabled(true);
-    mpAddMembersDialog->ui->memebershipDate->setEnabled(true);
-    mpAddMembersDialog->ui->paymentMethod->setEnabled(true);
-    mpAddMembersDialog->ui->payment->setEnabled(true);
-    mpAddMembersDialog->ui->saveBtn->setEnabled(true);
+    ui->refNo->setEnabled(true);
+    ui->name->setEnabled(true);
+    ui->mother->setEnabled(true);
+    ui->motherInLaw->setEnabled(true);
+    ui->spouse->setEnabled(true);
+    ui->childern->setEnabled(true);
+    ui->tel->setEnabled(true);
+    ui->email->setEnabled(true);
+    ui->postCode->setEnabled(true);
+    ui->address->setEnabled(true);
+    ui->memebershipDate->setEnabled(true);
+    ui->paymentMethod->setEnabled(true);
+    ui->payment->setEnabled(true);
+    ui->saveBtn->setEnabled(true);
 }
 
 void MainWindow::clearAddMemberUiFields(){
-    mpAddMembersDialog->ui->refNo->clear();
-    mpAddMembersDialog->ui->name->clear();
-    mpAddMembersDialog->ui->mother->clear();
-    mpAddMembersDialog->ui->motherInLaw->clear();
-    mpAddMembersDialog->ui->spouse->clear();
-    mpAddMembersDialog->ui->childern->clear();
-    mpAddMembersDialog->ui->tel->clear();
-    mpAddMembersDialog->ui->email->clear();
-    mpAddMembersDialog->ui->postCode->clear();
-    mpAddMembersDialog->ui->address->clear();
-    mpAddMembersDialog->ui->memebershipDate->setDate(QDate::currentDate());
-    mpAddMembersDialog->ui->paymentMethod->setCurrentIndex(0);
-    mpAddMembersDialog->ui->payment->setValue(5);
+    ui->refNo->clear();
+    ui->name->clear();
+    ui->mother->clear();
+    ui->motherInLaw->clear();
+    ui->spouse->clear();
+    ui->childern->clear();
+    ui->tel->clear();
+    ui->email->clear();
+    ui->postCode->clear();
+    ui->address->clear();
+    ui->memebershipDate->setDate(QDate::currentDate());
+    ui->paymentMethod->setCurrentIndex(0);
+    ui->payment->setValue(5);
 }
 
 void MainWindow::EnableBtns(){
@@ -739,14 +878,16 @@ void MainWindow::EnableEditRemoveBtn(){
     QModelIndex index = mpShowingModel->index(row_index, 0);
     QString ref_no = index.data().toString();
     index.data().clear();
+
     bool status = mpDbManager->isMemStatusAct(ref_no);
+    qDebug() << status << ref_no;
 
     if(status == true){
         ui->activateMemBtn->setEnabled(false);
         ui->deactivateMemBtn->setEnabled(true);
     } else {
         ui->activateMemBtn->setEnabled(true);
-        ui->deactivateMemBtn->setEnabled(false);
+        ui->deactivateMemBtn->setEnabled(true);
     }
 }
 
@@ -778,8 +919,7 @@ void MainWindow::activateMembership(){
             ui->appStatus->setText("Error: membership activation ...");
         } else{
             ui->appStatus->setText("   تم التنشيط بنجاح ");
-            //showInactiveMembers();
-            showActiveMembers();
+            showInactiveMembers();
             showCurrentPayments();
         }
     }

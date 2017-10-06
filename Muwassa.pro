@@ -15,15 +15,13 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     databasemanager.cpp \
     printingservice.cpp \
-    emailingservice.cpp \
-    addmembersdialog.cpp
+    emailingservice.cpp
 
 
 HEADERS  += mainwindow.h \
     databasemanager.h \
     printingservice.h \
-    emailingservice.h \
-    addmembersdialog.h
+    emailingservice.h
 
 
 

@@ -43,7 +43,8 @@ public:
 
 
 public:
-    QSqlDatabase db;
+    //QSqlDatabase theDatabase = QSqlDatabase::addDatabase("QSQLITE");
+    QSqlDatabase theDatabase = QSqlDatabase::addDatabase("QMYSQL");
     void setCurrentYear(int currentYear);
 
 
@@ -62,9 +63,10 @@ private:
 
     QString hostName = "localhost";
     int port = 3306;
-    QString databaseName = "muwassa_db";
+    QString databaseName = "/muwassa_db";
     QString userName = "amgad";
     QString userPass = "123";
+    QString appDataPath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
 };
 
 #endif // DATABASEMANAGER_H
