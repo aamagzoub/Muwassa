@@ -14,7 +14,8 @@ QString DatabaseManager::db_invocation()
 
     theDatabase.setHostName(hostName);
     theDatabase.setPort(port);
-    theDatabase.setDatabaseName(appDataPath + databaseName);
+    //theDatabase.setDatabaseName(appDataPath + databaseName);
+    theDatabase.setDatabaseName(databaseNameMySQL);
     theDatabase.setUserName(userName);
     theDatabase.setPassword(userPass);
 

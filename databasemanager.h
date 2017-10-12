@@ -64,8 +64,9 @@ private:
     QString hostName = "localhost";
     int port = 3306;
     QString databaseName = "/muwassa_db";
-    QString userName = "amgad";
-    QString userPass = "123";
+    QString databaseNameMySQL = "muwassa_db";
+    QString userName = "root";
+    QString userPass = "root";
     QString appDataPath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
 };
 
